@@ -76,7 +76,10 @@ run(){
 }
 
 START_TIME=$SECONDS
-run make flake8
+export files=$(git diff --cached --name-status | grep -E '\.py$' | awk '$1 != "D" { print $2 }' | xargs)
+if [[ $files != "" ]]; then
+    run make flake8 files="$files"
+fi
 # run make tests
 
 DURATION=$((SECONDS - START_TIME))
